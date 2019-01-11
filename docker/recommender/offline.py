@@ -11,7 +11,7 @@ api = Api(app)
 class Test(Resource):
     def get(self):
         return {
-            'items': ['Start']
+            'items': ['Button']
         }
 
 # Create routes
