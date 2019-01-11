@@ -1,4 +1,4 @@
-# Recommender Service API
+# Recommender Service
 
 # Import framework
 from flask import Flask
