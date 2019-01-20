@@ -1,60 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-		<link href="css/home.css" rel="stylesheet">
-		<title>Recipe Recommender System</title>
-		
-		<!-- Custom fonts for this template -->
-		<link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-	</head>
-	<body id="page-top">
-		<!-- Navigation -->
-		<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-		  <div class="container">
-			<a class="navbar-brand js-scroll-trigger" href="#page-top">Recipe Recommender</a>
-			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-			  Menu
-			  <i class="fas fa-bars"></i>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-			  <ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-				  <a class="nav-link js-scroll-trigger" href=".">Recommender</a>
-				</li>
-				<li class="nav-item">
-				  <a class="nav-link js-scroll-trigger" href=".">Sign In</a>
-				</li>
-			  </ul>
-			</div>
-		  </div>
-		</nav>
-		
-		<!-- Header -->
-		<header class="masthead">
-		  <div class="container d-flex h-100 align-items-center">
-			<div class="mx-auto text-center">
-			  <h1 class="mx-auto my-0 text-uppercase">Recipe Recommender</h1>
-			  <h2 class="text-white-50 mx-auto mt-2 mb-5">Recommending recipes you will love.</h2>
-			  <a href="." class="btn btn-primary js-scroll-trigger"><?php
+<?php	
+	$host = 'mysql';
+	$user = 'root';
+	$pass = 'rootpassword';
+	
+	$mysqli = new mysqli($host, $user, $pass);
+	
+	$sql = "CREATE DATABASE dataintegration";
+	mysqli_query($mysqli, $sql);
+	
+	$mysqli = new mysqli($host, $user, $pass, "dataintegration");
+	
+	$sql = "CREATE TABLE dataintegration.all_merged_dataset_with_id_copy_and_priority(
+	  title VARCHAR(150) DEFAULT NULL,
+	  ingredients TEXT DEFAULT NULL,
+	  instructions VARCHAR(255) DEFAULT NULL,
+	  source VARCHAR(250) DEFAULT NULL,
+	  categories VARCHAR(255) DEFAULT NULL,
+	  rating DOUBLE DEFAULT NULL,
+	  course VARCHAR(100) DEFAULT NULL,
+	  cuisine VARCHAR(100) DEFAULT NULL,
+	  flavors VARCHAR(150) DEFAULT NULL,
+	  numberOfservings DOUBLE DEFAULT NULL,
+	  picture_link VARCHAR(255) DEFAULT NULL,
+	  thumbnailUrl VARCHAR(150) DEFAULT NULL,
+	  totalTime VARCHAR(50) DEFAULT NULL,
+	  totalTimeInSeconds DOUBLE DEFAULT NULL,
+	  yield VARCHAR(200) DEFAULT NULL,
+	  recipeID MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+	  duplicate TINYINT(1) DEFAULT NULL,
+	  priority INT(11) DEFAULT NULL,
+	  du_reference INT(11) DEFAULT NULL,
+	  PRIMARY KEY (recipeID)
+	)";
+	mysqli_query($mysqli, $sql);
+	
+	// Temporary variable, used to store current query
+	$templine = '';
+	// Read in entire file
+	$lines = file("data.sql");
+	// Loop through each line
+	foreach ($lines as $line){
+		// Skip it if it's a comment
+		if (substr($line, 0, 2) == '--' || $line == '')
+			continue;
 
-				$json = file_get_contents('http://recommender-service/');
-				$obj = json_decode($json);
-				$items = $obj->items;
-
-				foreach ($items as $item) {
-					echo "$item";
-				}
-            ?></a>
-			</div>
-		  </div>
-		</header>
-
-		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-	</body>
-</html>
+		// Add this line to the current segment
+		$templine .= $line;
+		// If it has a semicolon at the end, it's the end of the query
+		if (substr(trim($line), -1, 1) == ';'){
+			// Perform the query
+			mysqli_query($mysqli, $templine);
+			// Reset temp variable to empty
+			$templine = '';
+		}
+	}
+	
+	header('Location: ./home.php');
+?>
