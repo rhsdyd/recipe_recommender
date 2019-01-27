@@ -1,5 +1,6 @@
 import pymysql
 import pandas as pd
+import random
 import sys
 
 
@@ -40,29 +41,29 @@ def save(p_recipeid, p_rating, p_user, p_conn):
 def recommend(p_user, p_conn):
     cursor = p_conn.cursor()
     sql = ('SELECT DISTINCT recipeID FROM ingredients WHERE NDB_No IN (SELECT NDB_No FROM user WHERE userID = %d) AND '
-           'recipeID NOT IN (SELECT recipeID FROM user_history WHERE userID = %d)' % (p_user, p_user))
+           'recipeID NOT IN (SELECT recipeID FROM user_history WHERE userID = %d) AND recipeID IN '
+           '(SELECT recipeID FROM all_merged_dataset_with_id_copy_and_priority WHERE priority = 1)' % (p_user, p_user))
     data = pd.read_sql(sql, p_conn)
-	data = list(data['recipeID'])
-	csql = ('SELECT recipeID, COUNT(NDB_No) FROM ingredients WHERE recipeID IN % GROUP BY recipeID'
-                % row['recipeID'])
-    cursor.execute(csql)
-    cdata = cursor.fetchall()
-    if len(data) > 5:
-        data = data.sample(5)
+    data = list(data['recipeID'])
+    placeholder = ', '.join(map(str, data))
+    sql = ('SELECT recipeID, GROUP_CONCAT(NDB_No), COUNT(recipeID) FROM ingredients WHERE recipeID IN (%s) GROUP BY recipeID' % placeholder)
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    rsql = ('SELECT NDB_No, rating FROM user WHERE userID = %d' % p_user)
+    rdata = pd.read_sql(rsql, conn)
+    if len(data) > 3000:
+        data = random.sample(data, 3000)
     compare = []
-    for index, row in data.iterrows():
-        ssql = ('SELECT SUM(rating) FROM user WHERE userID = %d AND NDB_No IN '
-                '(SELECT NDB_No FROM ingredients WHERE recipeID = %d)' % (p_user, row['recipeID']))
-        cursor.execute(ssql)
-        sdata = cursor.fetchall()
-        
-        score = sdata[0][0]/cdata[0][0]
-        compare.append(score)
-    r = data.iloc[compare.index(max(compare))]['recipeID']
-    return r
+    for recipe in data:
+        df1 = pd.DataFrame({'NDB_No': recipe[1].split(',')})
+        df1['NDB_No'] = df1['NDB_No'].astype(int)
+        matched = df1.merge(rdata, how='inner', on='NDB_No')
+        compare.append([recipe[0], matched['rating'].sum()/recipe[2]])
+    compare = sorted(compare, key=lambda x: x[1], reverse=True)
+    result = compare[0][0]
+    return result
 
 
-result = recommend(1, conn)
-#save(sys.argv[1], sys.argv[2], sys.argv[3], conn) # 1=recipeID, 2=rating, 3=userID
-#result = recommend(sys.argv[3])
+save(sys.argv[1], sys.argv[2], sys.argv[3], conn)  # 1=recipeID, 2=rating, 3=userID
+result = recommend(sys.argv[3], conn)
 print(result)

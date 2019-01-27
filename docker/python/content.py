@@ -17,20 +17,20 @@ tdata = pd.read_sql(sql_ing, conn)
 bdata = pd.read_sql(sql_ing2, conn)
 
 
-def editdist(s1, s2):
-    if len(s1) > len(s2):
-        s1, s2 = s2, s1
+def editdist(p_1, p_2):
+    if len(p_1) > len(p_2):
+        p_1, p_2 = p_2, p_1
 
-    distances = range(len(s1) + 1)
-    for i2, c2 in enumerate(s2):
-        distances_ = [i2+1]
-        for i1, c1 in enumerate(s1):
+    dist = range(len(p_1) + 1)
+    for i2, c2 in enumerate(p_2):
+        dist2 = [p_2+1]
+        for i1, c1 in enumerate(p_1):
             if c1 == c2:
-                distances_.append(distances[i1])
+                dist2.append(dist[i1])
             else:
-                distances_.append(1 + min((distances[i1], distances[i1 + 1], distances_[-1])))
-        distances = distances_
-    return distances[-1]
+                dist2.append(1 + min((dist[i1], dist[i1 + 1], dist2[-1])))
+        dist = dist2
+    return dist[-1]
 
 
 def table(r_id, sdata):
