@@ -1,0 +1,6 @@
+
+docker/website/\.idea/
+
+docker/python/\.idea/
+
+docker/python/__pycache__/

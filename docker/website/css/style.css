@@ -1,9 +1,11 @@
-body{
-	font-family:Roboto;
+body
+{
+	font-family: Roboto, serif;
 	letter-spacing:.0625em
 }
 
-a{
+a
+{
 	color:#fff!important
 }
 a:focus, a:hover{
@@ -13,7 +15,7 @@ a:focus, a:hover{
 
 .btn{
 	padding:1.25rem 2rem;
-	font-family:Roboto;
+	font-family: Roboto, serif;
 	font-size:80%;
 	text-transform:uppercase;
 	letter-spacing:.15rem;
@@ -92,46 +94,18 @@ a:focus, a:hover{
 	}
 }
 
-
 .masthead{
 	position:relative;
 	width:100%;
 	height:auto;
 	min-height:35rem;
 	padding:15rem 0;
-	background:url(../img/home_bg.jpg);
-	background-position:center;
-	background-repeat:no-repeat;
-	background-attachment:scroll;
+	background: url(../img/home_bg.jpg) no-repeat scroll center;
 	background-size:cover
-}
-.masthead-content{
-	position:relative;
-	width:100%;
-	height:auto;
-	min-height:35rem;
-	padding:15rem 0;
-	background:url(../img/content_bg.jpg)!important;
-	background-position:center;
-	background-repeat:no-repeat;
-	background-attachment:scroll;
-	background-size:cover!important
-}
-.masthead-user{
-	position:relative;
-	width:100%;
-	height:auto;
-	min-height:35rem;
-	padding:15rem 0;
-	background:url(../img/user_bg.jpg)!important;
-	background-position:center;
-	background-repeat:no-repeat;
-	background-attachment:scroll;
-	background-size:cover!important
 }
 
 .masthead h1{
-	font-family:Roboto;
+	font-family: Roboto, serif;
 	font-weight:bold;
 	font-size:2.5rem;
 	line-height:2.5rem;
@@ -151,7 +125,7 @@ a:focus, a:hover{
 }
 
 @media(min-width:992px){
-	.masthead, .masthead-content, .masthead-user{
+	.masthead {
 		height:100vh;
 		padding:0
 	}

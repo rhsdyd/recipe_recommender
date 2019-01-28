@@ -96,5 +96,5 @@ def recommend(r_id, amount, sdata, ndata):
     return r
 
 
-result = recommend(sys.argv[1], sys.argv[2], tdata, bdata)
+result = recommend(1000, 1, tdata, bdata)
 print(result)
