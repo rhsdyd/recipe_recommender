@@ -4,6 +4,9 @@ import numpy as np
 import sys
 
 
+recipeID = int(sys.argv[1])
+amount = int(sys.argv[2])
+
 conn = pymysql.connect(host='h2774525.stratoserver.net',
                        user='dataintegration',
                        password='gis7&B85',
@@ -23,7 +26,7 @@ def editdist(p_1, p_2):
 
     dist = range(len(p_1) + 1)
     for i2, c2 in enumerate(p_2):
-        dist2 = [p_2+1]
+        dist2 = [i2+1]
         for i1, c1 in enumerate(p_1):
             if c1 == c2:
                 dist2.append(dist[i1])
@@ -96,5 +99,5 @@ def recommend(r_id, amount, sdata, ndata):
     return r
 
 
-result = recommend(1000, 1, tdata, bdata)
+result = recommend(recipeID, amount, tdata, bdata)
 print(result)
