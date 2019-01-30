@@ -31,7 +31,7 @@ class Recipe extends DatabaseAbstraction
         $recipe->course = json_decode($result->course);
         $recipe->number_of_servings = $result->numberOfservings;
         $recipe->yield = $result->yield;
-        $recipe->thumbnail = $result->thumbnailUrl;
+        $recipe->thumbnail = $result->thumbnailUrl != '' ? $result->thumbnailUrl : 'img/no_image.png';
         $recipe->picture = $result->picture_link;
 
         $recipe->ingredients = [];

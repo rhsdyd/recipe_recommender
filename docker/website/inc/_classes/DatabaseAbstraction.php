@@ -14,6 +14,11 @@ abstract class DatabaseAbstraction
     public static function Init($db)
     {
         self::$Database = $db;
+
+        if (!$db->table_exists('user'))
+        {
+            exit('import is needed');
+        }
     }
 
     /**

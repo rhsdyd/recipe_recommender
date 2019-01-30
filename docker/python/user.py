@@ -55,6 +55,7 @@ def recommend(p_user, p_conn):
     data = pd.read_sql(sql, p_conn)
     data = list(data['recipeID'])
     placeholder = ', '.join(map(str, data))
+    print(placeholder)
     sql = ('SELECT recipeID, GROUP_CONCAT(NDB_No), COUNT(recipeID) FROM ingredients WHERE recipeID IN (%s) GROUP BY recipeID' % placeholder)
     cursor.execute(sql)
     data = cursor.fetchall()
